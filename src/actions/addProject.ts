@@ -15,13 +15,27 @@ const addProjectSchema = z.object({
   description: z
     .string()
     .min(10)
-    .max(200)
-    .regex(/^[a-zA-Z _-]*$/, {
+    .regex(/^[a-zA-Z0-9 _\-,.!?()&]*$/, {
       message:
-        "Project description can only contain letters, spaces, and underscores",
+        "Project description can only contain letters, numbers, spaces, underscores, hyphens, and common punctuation marks (.,!?()&)",
     }),
+
   image: z.instanceof(File),
-  techStack: z.array(z.string()).min(1),
+  techStack: z
+    .string() // This will initially be a string, as it's coming from FormData
+    .min(1) // Ensure the string is not empty
+    .transform((val) => {
+      try {
+        const parsed = JSON.parse(val); // Try to parse the string into an array
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return []; // Return an empty array if parsing fails
+      }
+    })
+    .refine((val) => Array.isArray(val), {
+      message: "Tech stack should be an array", // Ensure it's an array after parsing
+    }),
+  //.min(1, { message: "Tech stack array should have at least one item" }),
   demoUrl: z.string().url(),
   sourceUrl: z.string().url(),
 });
@@ -58,6 +72,7 @@ export async function addProject(
       demoUrl: formData.get("demoUrl"),
       sourceUrl: formData.get("sourceUrl"),
     });
+    console.log(formData.get("techStack"));
 
     if (!result.success) {
       return {
