@@ -57,6 +57,7 @@ export function TagInput({ tags, setTags }: TagInputProps) {
                 ))}
             </div>
             <Input
+                name='tag'
                 type="text"
                 value={input}
                 onChange={handleInputChange}

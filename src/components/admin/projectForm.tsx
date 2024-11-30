@@ -1,51 +1,37 @@
 'use client'
 
-import { useState, useCallback } from 'react'
-import { useDropzone } from 'react-dropzone'
+import { useActionState, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import Image from 'next/image'
 import { TagInput } from './tagInput'
+import { addProject } from '@/actions'
 
 interface Project {
     id: string
     title: string
     description: string
-    image: File | null
-    imagePreview: string
+    images: File[]
+    imagePreviews: string[]
     techStack: string[]
     demoUrl: string
     sourceUrl: string
 }
 
 export function ProjectsForm() {
+    const [formState, action] = useActionState(addProject.bind(null), { errors: {} })
     const [projects, setProjects] = useState<Project[]>([])
     const [currentProject, setCurrentProject] = useState<Project>({
         id: '',
         title: '',
         description: '',
-        image: null,
-        imagePreview: '',
+        images: [],
+        imagePreviews: [],
         techStack: [],
         demoUrl: '',
         sourceUrl: '',
-    })
-
-    const onDrop = useCallback((acceptedFiles: File[]) => {
-        const file = acceptedFiles[0]
-        setCurrentProject(prev => ({
-            ...prev,
-            image: file,
-            imagePreview: URL.createObjectURL(file)
-        }))
-    }, [])
-
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
-        onDrop,
-        accept: { 'image/*': [] },
-        multiple: false
     })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -53,15 +39,27 @@ export function ProjectsForm() {
         setCurrentProject(prev => ({ ...prev, [name]: value }))
     }
 
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const fileList = Array.from(e.target.files)
+            const previews = fileList.map(file => URL.createObjectURL(file))
+            setCurrentProject(prev => ({
+                ...prev,
+                images: fileList,
+                imagePreviews: previews
+            }))
+        }
+    }
+
     const handleAddProject = () => {
-        if (currentProject.title && currentProject.image) {
+        if (currentProject.title && currentProject.images.length > 0) {
             setProjects(prev => [...prev, { ...currentProject, id: Date.now().toString() }])
             setCurrentProject({
                 id: '',
                 title: '',
                 description: '',
-                image: null,
-                imagePreview: '',
+                images: [],
+                imagePreviews: [],
                 techStack: [],
                 demoUrl: '',
                 sourceUrl: '',
@@ -80,7 +78,7 @@ export function ProjectsForm() {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form action={action} className="space-y-6">
             <div className="space-y-4">
                 <div>
                     <Label htmlFor="title" className="text-white">Project Title</Label>
@@ -91,28 +89,31 @@ export function ProjectsForm() {
                     <Textarea id="description" name="description" value={currentProject.description} onChange={handleChange} className="bg-gray-700 text-white border-gray-600" />
                 </div>
                 <div>
-                    <Label className="text-white mb-2 block">Project Image</Label>
-                    <div
-                        {...getRootProps()}
-                        className={`p-6 border-2 border-dashed rounded-md text-center cursor-pointer transition-colors ${isDragActive ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-300 dark:border-gray-700'
-                            }`}
-                    >
-                        <input {...getInputProps()} />
-                        {currentProject.imagePreview ? (
-                            <div className="relative w-full h-40">
-                                <Image
-                                    src={currentProject.imagePreview}
-                                    alt="Project preview"
-                                    layout="fill"
-                                    objectFit="contain"
-                                />
-                            </div>
-                        ) : (
-                            <p className="text-gray-500 dark:text-gray-400">
-                                {isDragActive ? 'Drop the image here' : 'Drag and drop project image here, or click to select'}
-                            </p>
-                        )}
-                    </div>
+                    <Label htmlFor="projectImages" className="text-white">Project Images</Label>
+                    <Input
+                        id="projectImages"
+                        name="image"
+                        type="file"
+                        onChange={handleImageChange}
+                        multiple
+                        accept="image/*"
+                        className="bg-gray-700 text-white border-gray-600"
+                    />
+                    {currentProject.imagePreviews.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-2">
+                            {currentProject.imagePreviews.map((preview, index) => (
+                                <div key={index} className="relative w-20 h-20">
+                                    <Image
+                                        src={preview}
+                                        alt={`Preview ${index + 1}`}
+                                        layout="fill"
+                                        objectFit="cover"
+                                        className="rounded-md"
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
                 <div>
                     <Label htmlFor="techStack" className="text-white">Tech Stack</Label>
@@ -125,6 +126,7 @@ export function ProjectsForm() {
                             }))
                         }
                     />
+
                 </div>
                 <div>
                     <Label htmlFor="demoUrl" className="text-white">Demo URL</Label>
@@ -134,17 +136,17 @@ export function ProjectsForm() {
                     <Label htmlFor="sourceUrl" className="text-white">Source Code URL</Label>
                     <Input id="sourceUrl" name="sourceUrl" value={currentProject.sourceUrl} onChange={handleChange} className="bg-gray-700 text-white border-gray-600" />
                 </div>
-                <Button type="button" onClick={handleAddProject} className="bg-blue-600 hover:bg-blue-700 text-white">Add Project</Button>
+                <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">Add Project</Button>
             </div>
             <div>
                 <h3 className="font-semibold mb-2 text-white">Current Projects:</h3>
                 <ul className="space-y-4">
                     {projects.map((project) => (
                         <li key={project.id} className="flex items-center space-x-4 bg-gray-800 p-4 rounded-lg">
-                            {project.imagePreview && (
+                            {project.imagePreviews.length > 0 && (
                                 <div className="relative w-20 h-20 flex-shrink-0">
                                     <Image
-                                        src={project.imagePreview}
+                                        src={project.imagePreviews[0]}
                                         alt={project.title}
                                         layout="fill"
                                         objectFit="cover"
@@ -175,7 +177,14 @@ export function ProjectsForm() {
                         </li>
                     ))}
                 </ul>
+
             </div>
+            {formState.errors.title && <p className="text-red-500">{formState.errors.title[0]}</p>}
+            {formState.errors.description && <p className="text-red-500">{formState.errors.description[0]}</p>}
+            {formState.errors.techStack && <p className="text-red-500">{formState.errors.techStack[0]}</p>}
+            {formState.errors.demoUrl && <p className="text-red-500">{formState.errors.demoUrl[0]}</p>}
+            {formState.errors.sourceUrl && <p className="text-red-500">{formState.errors.sourceUrl[0]}</p>}
+            {formState.success && <p className="text-green-500">Project added successfully!</p>}
             <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">Save Projects</Button>
         </form>
     )
