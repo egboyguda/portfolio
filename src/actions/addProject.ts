@@ -1,6 +1,8 @@
 "use server";
 import { z } from "zod";
-
+import { db } from "@/db";
+import cloudinary from "@/utils/cloudinary";
+import type { Project } from "@prisma/client";
 //ini validtion rules
 //dapat ini na data a ig sesend sa frontend
 const addProjectSchema = z.object({
@@ -64,6 +66,7 @@ export async function addProject(
   {
     // dd check the data na gn pasa sa fronend
     //kung valid
+
     const result = addProjectSchema.safeParse({
       title: formData.get("title"),
       description: formData.get("description"),
@@ -73,12 +76,57 @@ export async function addProject(
       sourceUrl: formData.get("sourceUrl"),
     });
     console.log(formData.get("techStack"));
-
+    let project: Project;
     if (!result.success) {
       return {
         errors: result.error.flatten().fieldErrors,
       };
     }
+    try {
+      project = await db.project.create({
+        data: {
+          title: result.data.title,
+          description: result.data.description,
+          demoUrl: result.data.demoUrl,
+          sourceUrl: result.data.sourceUrl,
+          techStack: result.data.techStack,
+        },
+      });
+      //now need to feed to the
+      //cloudinary
+    } catch (error) {}
+    const files = formData.getAll("images") as File[]; // Assuming multiple files are passed as 'images'
+
+    await Promise.all(
+      files.map(async (file) => {
+        const arrayBuffer = await file.arrayBuffer(); // Convert file to ArrayBuffer
+        const buffer = new Uint8Array(arrayBuffer); // Convert to Uint8Array
+
+        new Promise((resolve, reject) => {
+          cloudinary.uploader
+            .upload_stream({}, function (error, result) {
+              if (error) {
+                reject(error);
+                return;
+              }
+              if (!result) {
+                reject(new Error("No result from Cloudinary"));
+                return;
+              }
+              db.image.create({
+                data: {
+                  projectId: project.id,
+                  url: result.url,
+                  public_id: result.public_id,
+                },
+              });
+              resolve(result);
+            })
+            .end(buffer); // Send binary data
+        });
+      })
+    );
+
     return {
       errors: {},
       success: true,
