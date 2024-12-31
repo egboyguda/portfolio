@@ -1,5 +1,4 @@
 'use client'
-
 import { useRef } from 'react'
 
 
@@ -8,6 +7,10 @@ import About from '@/components/common/about'
 import Skills from '@/components/common/skill'
 import Projects from '@/components/common/project'
 import Career from '@/components/common/career'
+
+
+
+
 
 export default function Home() {
   const aboutRef = useRef<HTMLElement>(null)

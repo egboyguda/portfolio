@@ -7,7 +7,7 @@ import { motion } from 'framer-motion'
 const skills = [
     'React', 'Next.js', 'TypeScript', 'JavaScript', 'HTML', 'CSS',
     'Tailwind CSS', 'Node.js', 'Express', 'MongoDB', 'PostgreSQL',
-    'Git', 'Docker', 'AWS', 'GraphQL', 'Redux', 'Jest'
+    'Git', 'Docker', 'AWS', 'Bash', 'Networking', 'Linux', 'Python', 'Django', 'React Native'
 ]
 
 const Skills = forwardRef<HTMLElement>((props, ref) => {

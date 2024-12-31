@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { forwardRef } from 'react'
-import { motion } from 'framer-motion'
-import Image from 'next/image'
-import { Button } from "@/components/ui/button"
-import { FileDown } from 'lucide-react'
+import { forwardRef } from "react";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { FileDown } from "lucide-react";
 
 const About = forwardRef<HTMLElement>((props, ref) => {
     return (
@@ -34,9 +34,11 @@ const About = forwardRef<HTMLElement>((props, ref) => {
                 <div className="flex-1 text-center md:text-left">
                     <h2 className="text-4xl font-bold mb-4">About Me</h2>
                     <p className="text-xl mb-6">
-                        I'm a passionate web developer with a keen eye for design and a love for creating
-                        intuitive, user-friendly experiences. With a strong foundation in modern web technologies,
-                        I strive to build applications that not only look great but also perform exceptionally.
+                        Hi, I&lsquo;m EG Boy Guda, a licensed Mechanical Engineer transitioning
+                        into software development. As a Self-taught Developer, I&lsquo;m actively
+                        seeking opportunities to apply my problem-solving skills and passion
+                        for technology in the software industry. Ready to contribute and
+                        grow in a dynamic team!
                     </p>
                     <Button className="inline-flex items-center">
                         <FileDown className="mr-2 h-4 w-4" /> Download Resume
@@ -44,10 +46,9 @@ const About = forwardRef<HTMLElement>((props, ref) => {
                 </div>
             </div>
         </motion.section>
-    )
-})
+    );
+});
 
-About.displayName = 'About'
+About.displayName = "About";
 
-export default About
-
+export default About;

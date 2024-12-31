@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 import { useActionState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import Image from 'next/image'
 import { TagInput } from './tagInput'
 import { addProject } from '@/actions'
@@ -17,12 +17,12 @@ interface Project {
     images: File[]
     imagePreviews: string[]
     techStack: string[]
-    demoUrl: string
-    sourceUrl: string
+    demoUrl: string | ''
+    sourceUrl: string | ''
 }
 
 export function ProjectsForm() {
-    const [formState, action] = useActionState(addProject.bind(null), { errors: {} })
+    const [formState, action, isPending] = useActionState(addProject.bind(null), { errors: {} })
     const [currentProject, setCurrentProject] = useState<Project>({
         id: '',
         title: '',
@@ -107,22 +107,20 @@ export function ProjectsForm() {
                     />
                 </div>
                 <div>
-                    <Label htmlFor="demoUrl" className="text-white">Demo URL</Label>
-                    <Input id="demoUrl" name="demoUrl" value={currentProject.demoUrl} onChange={handleChange} className="bg-gray-700 text-white border-gray-600" />
+                    <Label htmlFor="demoUrl" className="text-white">Demo URL (Optional)</Label>
+                    <Input id="demoUrl" name="demoUrl" value={currentProject.demoUrl || ''} onChange={handleChange} className="bg-gray-700 text-white border-gray-600" />
                 </div>
                 <div>
-                    <Label htmlFor="sourceUrl" className="text-white">Source Code URL</Label>
-                    <Input id="sourceUrl" name="sourceUrl" value={currentProject.sourceUrl} onChange={handleChange} className="bg-gray-700 text-white border-gray-600" />
+                    <Label htmlFor="sourceUrl" className="text-white">Source Code URL (Optional)</Label>
+                    <Input id="sourceUrl" name="sourceUrl" value={currentProject.sourceUrl || ''} onChange={handleChange} className="bg-gray-700 text-white border-gray-600" />
                 </div>
             </div>
+
             {formState.errors.title && <p className="text-red-500">{formState.errors.title[0]}</p>}
             {formState.errors.description && <p className="text-red-500">{formState.errors.description[0]}</p>}
             {formState.errors.techStack && <p className="text-red-500">{formState.errors.techStack[0]}</p>}
-            {formState.errors.demoUrl && <p className="text-red-500">{formState.errors.demoUrl[0]}</p>}
-            {formState.errors.sourceUrl && <p className="text-red-500">{formState.errors.sourceUrl[0]}</p>}
             {formState.success && <p className="text-green-500">Project added successfully!</p>}
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">Add Project</Button>
+            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">{isPending ? 'Adding...' : 'Add Project'}</Button>
         </form>
     )
 }
-

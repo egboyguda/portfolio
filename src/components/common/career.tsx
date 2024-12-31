@@ -5,23 +5,18 @@ import { motion } from 'framer-motion'
 
 const careerSteps = [
     {
-        title: 'Senior Frontend Developer',
-        company: 'Tech Innovators Inc.',
-        period: '2021 - Present',
-        description: 'Leading frontend development for cutting-edge web applications.'
+        title: 'Engineering Manager 1',
+        company: 'Goldilocks Bakeshop Inc.',
+        period: 'July 2024 - January 2025',
+        description: 'Head Of Engineering Department of The Caramel Plant of Goldilocks'
     },
     {
-        title: 'Full Stack Developer',
-        company: 'Digital Solutions Ltd.',
-        period: '2018 - 2021',
-        description: 'Developed and maintained full-stack applications using React and Node.js.'
+        title: 'Project Site Engineer',
+        company: 'Centrifugal Machineries and Services Inc.',
+        period: 'February 2023 - July 2024',
+        description: 'Responsible of Managing the Projects on the Site'
     },
-    {
-        title: 'Junior Web Developer',
-        company: 'WebCraft Agency',
-        period: '2016 - 2018',
-        description: 'Started my career working on various client projects using HTML, CSS, and JavaScript.'
-    }
+
 ]
 
 const Career = forwardRef<HTMLElement>((props, ref) => {
