@@ -80,25 +80,29 @@ const Projects = forwardRef<HTMLElement>((props, ref) => {
                                 <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
                                 <p className="text-gray-400 line-clamp-3 mb-4">{project.description}</p>
                                 <div className="flex flex-wrap gap-2">
-                                    <Button
-                                        size="sm"
-                                        className="flex items-center"
-                                        disabled={!project.demoUrl}
-                                    >
-                                        <ExternalLink className="mr-2 h-4 w-4" />
-                                        <Link href={project.demoUrl || '#'} target="_blank">
+                                    <Link href={project.demoUrl || '#'} target="_blank">
+                                        <Button
+                                            size="sm"
+                                            className="flex items-center"
+                                            disabled={!project.demoUrl}
+                                        >
+                                            <ExternalLink className="mr-2 h-4 w-4" />
+
                                             Demo
-                                        </Link>
-                                    </Button>
-                                    <Button
-                                        size="sm"
-                                        variant="secondary"
-                                        className="flex items-center bg-gray-700 hover:bg-gray-600 text-white"
-                                        disabled={!project.sourceUrl}
-                                    >
-                                        <Code className="mr-2 h-4 w-4" />
-                                        Code
-                                    </Button>
+
+                                        </Button>
+                                    </Link>
+                                    <Link href={project.sourceUrl || '#'} target="_blank">
+                                        <Button
+                                            size="sm"
+                                            variant="secondary"
+                                            className="flex items-center bg-gray-700 hover:bg-gray-600 text-white"
+                                            disabled={!project.sourceUrl}
+                                        >
+                                            <Code className="mr-2 h-4 w-4" />
+                                            Code
+                                        </Button>
+                                    </Link>
                                     <Button
                                         size="sm"
                                         variant="secondary"

@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { FileDown } from "lucide-react";
+import Link from "next/link";
 
 const About = forwardRef<HTMLElement>((props, ref) => {
     return (
@@ -40,9 +41,11 @@ const About = forwardRef<HTMLElement>((props, ref) => {
                         for technology in the software industry. Ready to contribute and
                         grow in a dynamic team!
                     </p>
-                    <Button className="inline-flex items-center">
-                        <FileDown className="mr-2 h-4 w-4" /> Download Resume
-                    </Button>
+                    <Link target="_blank" href={"https://res.cloudinary.com/dzunpwyao/image/upload/v1735618583/CV_2024123112153384_mre0gn.pdf"}>
+                        <Button className="inline-flex items-center">
+                            <FileDown className="mr-2 h-4 w-4" /> Download Resume
+                        </Button></Link>
+
                 </div>
             </div>
         </motion.section>
