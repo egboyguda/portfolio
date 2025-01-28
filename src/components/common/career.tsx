@@ -4,12 +4,7 @@ import { forwardRef } from 'react'
 import { motion } from 'framer-motion'
 
 const careerSteps = [
-    {
-        title: 'Engineering Manager 1',
-        company: 'Goldilocks Bakeshop Inc.',
-        period: 'July 2024 - January 2025',
-        description: 'Head Of Engineering Department of The Caramel Plant of Goldilocks'
-    },
+    
     {
         title: 'Project Site Engineer',
         company: 'Centrifugal Machineries and Services Inc.',
